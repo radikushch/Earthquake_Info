@@ -5,6 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     android:padding="16dp"
+    android:background="@drawable/list_item_selector"
     xmlns:tools="http://schemas.android.com/tools">
 
     <TextView
