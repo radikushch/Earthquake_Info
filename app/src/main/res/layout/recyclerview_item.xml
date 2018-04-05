@@ -54,6 +54,7 @@
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="16dp"
         android:layout_weight="1"
+        android:textColor="@color/textColorEarthquakeDetails"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Feb 2, 2018"/>
@@ -64,6 +65,7 @@
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="16dp"
         android:layout_weight="1"
+        android:textColor="@color/textColorEarthquakeDetails"
         app:layout_constraintRight_toRightOf="@id/tv_date"
         app:layout_constraintTop_toBottomOf="@id/tv_date"
         tools:text="3:00 PM"/>

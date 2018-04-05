@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.net.URL;
 import java.util.List;
 
 import static android.content.ContentValues.TAG;
@@ -22,10 +23,16 @@ import static android.content.ContentValues.TAG;
 
 public class EarthquakesAdapter extends RecyclerView.Adapter<EarthquakesAdapter.EarthquakeViewHolder> {
 
-    private List<EarthQuake> list;
+    public interface OnItemClickListener {
+        void onItemClick(URL url);
+    }
 
-    public EarthquakesAdapter(List<EarthQuake> list, MainActivity context) {
+    private List<EarthQuake> list;
+    private final OnItemClickListener listener;
+
+    public EarthquakesAdapter(List<EarthQuake> list, OnItemClickListener listener) {
         this.list = list;
+        this.listener = listener;
     }
 
     @Override
@@ -46,7 +53,7 @@ public class EarthquakesAdapter extends RecyclerView.Adapter<EarthquakesAdapter.
     }
 
 
-    public class EarthquakeViewHolder extends RecyclerView.ViewHolder {
+    public class EarthquakeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private TextView mLevelTextView;
         private TextView mPlaceTextView;
@@ -57,6 +64,7 @@ public class EarthquakesAdapter extends RecyclerView.Adapter<EarthquakesAdapter.
 
         public EarthquakeViewHolder(View itemView) {
             super(itemView);
+            itemView.setOnClickListener(this);
             context = itemView.getContext();
             mLevelTextView = itemView.findViewById(R.id.tv_level);
             mPlaceTextView = itemView.findViewById(R.id.tv_place);
@@ -115,5 +123,10 @@ public class EarthquakesAdapter extends RecyclerView.Adapter<EarthquakesAdapter.
                 }
                 return ContextCompat.getColor(context, magnitudeColorResourceId);
             }
+
+        @Override
+        public void onClick(View view) {
+          listener.onItemClick(list.get(getAdapterPosition()).getUrl());
         }
     }
+}
