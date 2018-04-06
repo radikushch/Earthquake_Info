@@ -5,12 +5,14 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.provider.Settings;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 
 import java.net.URL;
@@ -53,10 +55,10 @@ public class MainActivity extends AppCompatActivity implements EarthquakesAdapte
         } else {
             mIndicator.setVisibility(View.GONE);
             Snackbar snackbar = Snackbar.make(findViewById(R.id.layout), "No Internet Connection",
-                    Snackbar.LENGTH_LONG).setAction("RETRY", new View.OnClickListener() {
+                    Snackbar.LENGTH_LONG).setAction("Turn on", new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                   openSettingActivity();
+                    openSettingActivity();
                 }
             });
             snackbar.show();
@@ -64,8 +66,8 @@ public class MainActivity extends AppCompatActivity implements EarthquakesAdapte
     }
 
     private void openSettingActivity() {
-        Intent intent = new Intent();
-
+        Intent intent = new Intent(Settings.ACTION_SETTINGS);
+        startActivity(intent);
     }
 
     private boolean isConnected() {
