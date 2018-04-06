@@ -6,11 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.widget.Toast;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements EarthquakesAdapter.OnItemClickListener {
 
@@ -26,7 +23,8 @@ public class MainActivity extends AppCompatActivity implements EarthquakesAdapte
 
     private void init() {
         mList = findViewById(R.id.rv_list);
-        adapter = new EarthquakesAdapter(QueryUtils.parseEarthQuakeData(), this);
+        String JSONString = NetworkUtils.getJSONString();
+        adapter = new EarthquakesAdapter(JSONParsingUtils.parseEarthQuakeData(JSONString), this);
         mList.setHasFixedSize(true);
         mList.setLayoutManager(new LinearLayoutManager(this));
         mList.setAdapter(adapter);
