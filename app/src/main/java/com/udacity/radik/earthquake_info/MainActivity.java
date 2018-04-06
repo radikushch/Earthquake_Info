@@ -6,13 +6,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
-import android.widget.ProgressBar;
 
 import java.net.URL;
+import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements EarthquakesAdapter.OnItemClickListener {
+public class MainActivity extends AppCompatActivity implements EarthquakesAdapter.OnItemClickListener,
+        android.support.v4.app.LoaderManager.LoaderCallbacks<String> {
 
+    private static final int LOADER_ID = 0;
     private RecyclerView mList;
     private EarthquakesAdapter adapter;
 
@@ -25,11 +26,11 @@ public class MainActivity extends AppCompatActivity implements EarthquakesAdapte
 
     private void init() {
         mList = findViewById(R.id.rv_list);
-        String JSONString = NetworkUtils.getJSONString();
-        adapter = new EarthquakesAdapter(JSONParsingUtils.parseEarthQuakeData(JSONString), this);
+        adapter = new EarthquakesAdapter(new ArrayList<EarthQuake>(), this);
         mList.setHasFixedSize(true);
         mList.setLayoutManager(new LinearLayoutManager(this));
         mList.setAdapter(adapter);
+        getSupportLoaderManager().initLoader(LOADER_ID, null, this).forceLoad();
     }
 
     @Override
@@ -43,5 +44,20 @@ public class MainActivity extends AppCompatActivity implements EarthquakesAdapte
         if(intent.resolveActivity(getPackageManager()) != null){
             startActivity(intent);
         }
+    }
+
+    @Override
+    public android.support.v4.content.Loader<String> onCreateLoader(int id, Bundle args) {
+        return new JSONLoader(MainActivity.this);
+    }
+
+    @Override
+    public void onLoadFinished(android.support.v4.content.Loader<String> loader, String data) {
+        adapter.swapData(JSONParsingUtils.parseEarthQuakeData(data));
+    }
+
+    @Override
+    public void onLoaderReset(android.support.v4.content.Loader<String> loader) {
+        adapter.swapData(new ArrayList<EarthQuake>());
     }
 }

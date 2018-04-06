@@ -1,7 +1,6 @@
 package com.udacity.radik.earthquake_info;
 
 import android.annotation.SuppressLint;
-import android.os.AsyncTask;
 import android.util.Log;
 
 import java.io.IOException;
@@ -48,8 +47,24 @@ public final class NetworkUtils {
     }
 
     private static String loadData(String JSONUrl) throws IOException, ExecutionException, InterruptedException {
-        OkHttpHandler okHttpHandler = (OkHttpHandler) new OkHttpHandler().execute(JSONUrl);
-        return okHttpHandler.get();
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(JSONUrl)
+                .build();
+        Response response = null;
+        try {
+            response = client.newCall(request).execute();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            if (response != null) {
+                return response.body().string();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @SuppressLint("SimpleDateFormat")
@@ -60,32 +75,5 @@ public final class NetworkUtils {
     @SuppressLint("SimpleDateFormat")
     private static String getCurrentDate() {
         return new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-    }
-
-    public static class OkHttpHandler extends AsyncTask<String , Void, String> {
-
-        OkHttpClient client = new OkHttpClient();
-
-        @Override
-        protected String doInBackground(String... strings) {
-            Request request = new Request.Builder()
-                    .url(strings[0])
-                    .build();
-            Response response = null;
-            try {
-                response = client.newCall(request).execute();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            try {
-                if (response != null) {
-                    return response.body().string();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
     }
 }

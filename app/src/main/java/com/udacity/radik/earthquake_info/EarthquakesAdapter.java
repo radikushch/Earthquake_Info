@@ -48,6 +48,11 @@ public class EarthquakesAdapter extends RecyclerView.Adapter<EarthquakesAdapter.
         return list.size();
     }
 
+    public void swapData(List<EarthQuake> list) {
+        this.list.clear();
+        this.list.addAll(list);
+        notifyDataSetChanged();
+    }
 
     public class EarthquakeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
