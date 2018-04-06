@@ -1,14 +1,15 @@
 package com.udacity.radik.earthquake_info;
 
+import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
-import okhttp3.Call;
-import okhttp3.Callback;
+import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -37,15 +38,28 @@ public final class NetworkUtils {
     }
 
     private static String buildURL() {
-        String url = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2016-01-01&endtime=2016-01-31&minmag=6&limit=10";
-        return url;
+        HttpUrl.Builder urlBuilder = HttpUrl.parse("https://earthquake.usgs.gov/fdsnws/event/1/query")
+                .newBuilder();
+        urlBuilder.addQueryParameter("format", "geojson");
+        urlBuilder.addQueryParameter("starttime", getCurrentMonth());
+        urlBuilder.addQueryParameter("endtime", getCurrentDate());
+        urlBuilder.addQueryParameter("minmag", "4");
+        return urlBuilder.build().toString();
     }
 
     private static String loadData(String JSONUrl) throws IOException, ExecutionException, InterruptedException {
         OkHttpHandler okHttpHandler = (OkHttpHandler) new OkHttpHandler().execute(JSONUrl);
-        String result = okHttpHandler.get();
-        Log.e(">", "loadData: " + result);
-        return result;
+        return okHttpHandler.get();
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    private static String getCurrentMonth() {
+        return new SimpleDateFormat("yyyy-MM-01").format(new Date());
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    private static String getCurrentDate() {
+        return new SimpleDateFormat("yyyy-MM-dd").format(new Date());
     }
 
     public static class OkHttpHandler extends AsyncTask<String , Void, String> {
@@ -64,11 +78,14 @@ public final class NetworkUtils {
                 e.printStackTrace();
             }
             try {
-                return response.body().string();
+                if (response != null) {
+                    return response.body().string();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
             return null;
         }
+
     }
 }
