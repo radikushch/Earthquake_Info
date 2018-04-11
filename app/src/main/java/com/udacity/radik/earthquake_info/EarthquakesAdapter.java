@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.udacity.radik.earthquake_info.Model.EarthQuake;
+
 import java.net.URL;
 import java.util.List;
 

@@ -1,5 +1,7 @@
-package com.udacity.radik.earthquake_info;
+package com.udacity.radik.earthquake_info.Presenter;
 
+
+import android.annotation.SuppressLint;
 
 import com.udacity.radik.earthquake_info.Model.EarthQuake;
 
@@ -71,11 +73,13 @@ public final class JSONParsingUtils {
     }
 
     private static String formatTime(Date dateObject) {
+        @SuppressLint("SimpleDateFormat")
         SimpleDateFormat timeFormat = new SimpleDateFormat("h:mm a");
         return timeFormat.format(dateObject);
     }
 
     private static String formatDate(Date dateObject) {
+        @SuppressLint("SimpleDateFormat")
         SimpleDateFormat dateFormat = new SimpleDateFormat("LLL dd, yyyy");
         return dateFormat.format(dateObject);
     }
