@@ -1,6 +1,8 @@
 package com.udacity.radik.earthquake_info;
 
 
+import com.udacity.radik.earthquake_info.Model.EarthQuake;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
