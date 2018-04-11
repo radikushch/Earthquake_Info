@@ -2,6 +2,6 @@ package com.udacity.radik.earthquake_info.Model;
 
 import android.app.LoaderManager;
 
-public interface IModel extends LoaderManager.LoaderCallbacks<String> {
+public interface IModel {
     String getEarthquakes(String url);
 }
