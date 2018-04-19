@@ -1,5 +1,6 @@
 package com.udacity.radik.earthquake_info;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.StateListDrawable;
@@ -10,9 +11,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.udacity.radik.earthquake_info.Model.EarthQuake;
+import com.udacity.radik.earthquake_info.Model.Data.EarthQuake;
 
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -22,7 +25,7 @@ import java.util.List;
 public class EarthquakesAdapter extends RecyclerView.Adapter<EarthquakesAdapter.EarthquakeViewHolder> {
 
     public interface OnItemClickListener {
-        void onItemClick(URL url);
+        void onItemClick(String url);
     }
 
     private List<EarthQuake> list;
@@ -78,14 +81,53 @@ public class EarthquakesAdapter extends RecyclerView.Adapter<EarthquakesAdapter.
 
         public void bind(int position) {
             EarthQuake earthQuake = list.get(position);
-            mLevelTextView.setText(String.valueOf(earthQuake.getMagnitude()));
+            mLevelTextView.setText(String.valueOf(earthQuake.getMag()));
             StateListDrawable drawable = (StateListDrawable) mLevelTextView.getBackground();
-            int color = getColor(earthQuake.getMagnitude());
+            int color = getColor(earthQuake.getMag());
             drawable.setColorFilter(color, PorterDuff.Mode.SRC);
-            mPlaceTextView.setText(earthQuake.getLocation());
-            mDistanceTextView.setText(earthQuake.getDistance());
-            mDateTextView.setText(earthQuake.getDate());
-            mTimeTextView.setText(earthQuake.getTime());
+            String location = parseLocation(earthQuake.getPlace());
+            mPlaceTextView.setText(location);
+            String distance = parseDistance(earthQuake.getPlace());
+            mDistanceTextView.setText(distance);
+            String date = parseDate(earthQuake.getTime());
+            mDateTextView.setText(date);
+            String time = parseTime(earthQuake.getTime());
+            mTimeTextView.setText(time);
+        }
+
+        private String parseTime(Long time) {
+            Date dateObject = new Date(time);
+            @SuppressLint("SimpleDateFormat")
+            SimpleDateFormat timeFormat = new SimpleDateFormat("h:mm a");
+            return timeFormat.format(dateObject);
+
+        }
+
+        private String parseDate(Long time) {
+            Date dateObject = new Date(time);
+            @SuppressLint("SimpleDateFormat")
+            SimpleDateFormat dateFormat = new SimpleDateFormat("LLL dd, yyyy");
+            return dateFormat.format(dateObject);
+        }
+
+        private String parseDistance(String place) {
+            String distance;
+            if(place.contains("of")){
+                distance = place.substring(0, place.indexOf("of") + 2);
+            } else {
+                distance = "Near the";
+            }
+            return distance;
+        }
+
+        private String parseLocation(String place) {
+            String location;
+            if(place.contains("of")){
+                location = place.substring(place.indexOf("of") + 3, place.length());
+            } else {
+                location = place;
+            }
+            return location;
         }
 
         private int getColor(Double magnitude) {

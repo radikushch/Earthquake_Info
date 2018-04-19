@@ -7,5 +7,5 @@ public interface IMainPresenter {
     void showLoading();
     void hideLoading();
     void openSettings();
-    void browseDetailInfo(URL url);
+    void browseDetailInfo(String url);
 }

@@ -3,7 +3,7 @@ package com.udacity.radik.earthquake_info.Presenter;
 
 import android.annotation.SuppressLint;
 
-import com.udacity.radik.earthquake_info.Model.EarthQuake;
+import com.udacity.radik.earthquake_info.Model.Data.EarthQuake;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,12 +37,10 @@ public final class JSONParsingUtils {
                 setMagnitudeToEartQuake(properties.getDouble("mag"), earthQuake);
                 setLocationToEartQuake(properties.getString("place"), earthQuake);
                 setDateToEarhQuake(properties.getLong("time"), earthQuake);
-                earthQuake.setUrl(new URL(properties.getString("url")));
+               // earthQuake.setUrl(new URL(properties.getString("url")));
                 earthQuakes.add(earthQuake);
             }
         }catch (JSONException e){
-            e.printStackTrace();
-        } catch (MalformedURLException e) {
             e.printStackTrace();
         }
         return earthQuakes;
@@ -50,7 +48,7 @@ public final class JSONParsingUtils {
 
     private static void setMagnitudeToEartQuake(double mag, EarthQuake earthQuake) {
         DecimalFormat decimalFormat = new DecimalFormat("0.0");
-        earthQuake.setMagnitude(Double.valueOf(decimalFormat.format(mag)));
+        earthQuake.setMag(Double.valueOf(decimalFormat.format(mag)));
     }
 
     private static void setLocationToEartQuake(String place, EarthQuake earthQuake) {
@@ -62,14 +60,14 @@ public final class JSONParsingUtils {
             distance = "Near the";
             location = place;
         }
-        earthQuake.setDistance(distance);
-        earthQuake.setLocation(location);
+        earthQuake.setPlace(distance);
+        earthQuake.setPlace(location);
     }
 
     private static void setDateToEarhQuake(long time, EarthQuake earthQuake) {
         Date dateObject = new Date(time);
-        earthQuake.setDate(formatDate(dateObject));
-        earthQuake.setTime(formatTime(dateObject));
+//        earthQuake.setTime(formatDate(dateObject));
+//        earthQuake.setTime(formatTime(dateObject));
     }
 
     private static String formatTime(Date dateObject) {
