@@ -14,4 +14,5 @@ public interface IView {
     void showError();
     void showDetailInfo(String url);
     void onStartActivity(Intent intent);
+
 }

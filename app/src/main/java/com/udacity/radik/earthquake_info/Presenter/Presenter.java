@@ -17,8 +17,6 @@ import com.udacity.radik.earthquake_info.Model.Data.QueryResult;
 import com.udacity.radik.earthquake_info.Model.RetrofitClient;
 import com.udacity.radik.earthquake_info.View.IView;
 
-import java.io.IOException;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -35,14 +33,13 @@ public class Presenter implements IMainPresenter {
     private IView view;
     private RetrofitClient retrofitClient;
 
-    public Presenter(IView view) {
-        this.view = view;
+    public Presenter() {
         retrofitClient = new RetrofitClient();
     }
 
     @Override
     public void loadData() {
-        if(isConnected()){
+        if(isNetworkAvailable()){
             showLoading();
             startLoading();
         } else {
@@ -50,7 +47,7 @@ public class Presenter implements IMainPresenter {
         }
     }
 
-    private boolean isConnected() {
+    public boolean isNetworkAvailable() {
         ConnectivityManager cm = (ConnectivityManager) ((AppCompatActivity) view)
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = null;
@@ -60,26 +57,16 @@ public class Presenter implements IMainPresenter {
         return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
     }
 
-
     private void startLoading() {
-        Call<QueryResult> call = retrofitClient.getEarthQuakesAPI().getEarthQuakes(getParameters());
+        Call<QueryResult> call = retrofitClient.getEarthQuakesAPI(isNetworkAvailable()).getEarthQuakes(getParameters());
                 call.enqueue(new Callback<QueryResult>() {
             @Override
             public void onResponse(@NonNull Call<QueryResult> call, @NonNull Response<QueryResult> response) {
                 if(response.isSuccessful()){
                     view.showData(getEarthQuakesList(response.body().getFeatures()));
-                    for (int i = 0; i < response.body().getFeatures().size(); i++) {
-                        Log.e(">", "onResponse: " + response.body().getFeatures().get(i).getProperties().getPlace());
-                    }
-
                     hideLoading();
                 }else {
                     view.showError();
-                    try {
-                        Log.e(">", "onResponse not successful -> " + response.errorBody().string());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
                 }
             }
 
@@ -94,7 +81,7 @@ public class Presenter implements IMainPresenter {
     private List<EarthQuake> getEarthQuakesList(List<Features> features) {
         List<EarthQuake> list = new ArrayList<>();
         for(Features feature : features) {
-            list.add(feature.getProperties());
+            list.add(feature.getEarthQuake());
         }
         return list;
     }
@@ -104,7 +91,7 @@ public class Presenter implements IMainPresenter {
         parameters.put("format", "geojson");
         parameters.put("starttime", getCurrentMonth());
         parameters.put("endtime", getCurrentDate());
-        parameters.put("minmag", "4");
+        parameters.put("minmag", "0");
         return parameters;
 
     }
@@ -144,5 +131,13 @@ public class Presenter implements IMainPresenter {
         }
     }
 
+    @Override
+    public void onAttachView(IView view) {
+        this.view = view;
+    }
 
+    @Override
+    public void onDetachView() {
+        this.view = null;
+    }
 }

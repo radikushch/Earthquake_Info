@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 
@@ -40,13 +41,21 @@ public class MainActivity extends AppCompatActivity implements IView, Earthquake
         mList.setHasFixedSize(true);
         mList.setLayoutManager(new LinearLayoutManager(this));
         mList.setAdapter(adapter);
-        presenter = new Presenter(this);
+        presenter = new Presenter();
+        presenter.onAttachView(this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        Log.e("<", "onResume: ");
         presenter.loadData();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.onDetachView();
     }
 
     @Override
@@ -56,11 +65,13 @@ public class MainActivity extends AppCompatActivity implements IView, Earthquake
 
     @Override
     public void showLoadingIndicator() {
+        mList.setVisibility(View.INVISIBLE);
         mLoadingIndicator.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideLoadingIndicator() {
+        mList.setVisibility(View.VISIBLE);
         mLoadingIndicator.setVisibility(View.GONE);
     }
 

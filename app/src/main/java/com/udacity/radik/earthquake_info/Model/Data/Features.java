@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 public class Features {
     private String type;
     @SerializedName("properties")
-    private EarthQuake properties;
+    private EarthQuake earthQuake;
 }

@@ -1,6 +1,6 @@
 package com.udacity.radik.earthquake_info.Presenter;
 
-import java.net.URL;
+import com.udacity.radik.earthquake_info.View.IView;
 
 public interface IMainPresenter {
     void loadData();
@@ -8,4 +8,6 @@ public interface IMainPresenter {
     void hideLoading();
     void openSettings();
     void browseDetailInfo(String url);
+    void onAttachView(IView view);
+    void onDetachView();
 }
