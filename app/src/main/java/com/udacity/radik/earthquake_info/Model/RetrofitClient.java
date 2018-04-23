@@ -2,9 +2,11 @@ package com.udacity.radik.earthquake_info.Model;
 
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -19,56 +21,54 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
 
-
-
-    public IEarthquakeServiceAPI getEarthQuakesAPI(boolean isNetworkAvailable) {
+    public IEarthquakeServiceAPI getEarthQuakesAPI(boolean isNetworkAvailable, Cache cache) {
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .addNetworkInterceptor(new ResponseCacheInterceptor())
-                .addInterceptor(new OfflineResponseCacheInterceptor(isNetworkAvailable))
-                .cache(new Cache(new File("Cache"), 5 * 1024 * 1024))
+                .cache(cache)
+                .addNetworkInterceptor(new CachingControlInterceptor(isNetworkAvailable))
                 .build();
         Retrofit retrofit = new Retrofit.Builder()
-                //.client(okHttpClient)
+                .client(okHttpClient)
                 .baseUrl("https://earthquake.usgs.gov/fdsnws/event/1/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         return retrofit.create(IEarthquakeServiceAPI.class);
     }
 
-    private static class ResponseCacheInterceptor implements Interceptor {
-
-        @Override
-        public Response intercept(Chain chain) throws IOException {
-            Response originalResponse = chain.proceed(chain.request());
-            int maxAge = getMaxAge();
-            return originalResponse.newBuilder()
-                    .header("Cache-Control", "public, max-age=" + maxAge)
-                    .build();
-        }
-
-        public int getMaxAge() {
-            //get time to the end of current day
-            return 120;
-        }
-    }
-
-    private static class OfflineResponseCacheInterceptor implements Interceptor {
+    private class CachingControlInterceptor implements Interceptor {
 
         private boolean isNetworkAvailable;
 
-        public OfflineResponseCacheInterceptor(boolean isNetworkAvailable) {
+        public CachingControlInterceptor(boolean isNetworkAvailable) {
             this.isNetworkAvailable = isNetworkAvailable;
         }
 
         @Override
-        public Response intercept(@NonNull Chain chain) throws IOException {
-            Request request = chain.request();
-            if(isNetworkAvailable) {
-                request = request.newBuilder()
-                        .header("Cache-Control", "public, only-if-cached, max-stale" + 604800)
+        public Response intercept(Chain chain) throws IOException {
+            Response originalResponse = chain.proceed(chain.request());
+            if (isNetworkAvailable) {
+                int maxAge = getmaxAge();
+                return originalResponse.newBuilder()
+                        .header("Cache-Control", "public, max-age=" + maxAge)
+                        .build();
+            } else {
+                int maxStale = 60 * 60 * 24 * 28;
+                return originalResponse.newBuilder()
+                        .header("Cache-Control", "public, only-if-cached, max-stale=" + maxStale)
                         .build();
             }
-            return chain.proceed(request);
+        }
+
+        private int getmaxAge() {
+            int maxAge;
+            Calendar c = Calendar.getInstance();
+            Long now = c.getTimeInMillis();
+            c.set(Calendar.HOUR_OF_DAY, 23);
+            c.set(Calendar.MINUTE, 59);
+            c.set(Calendar.SECOND, 59);
+            c.set(Calendar.MILLISECOND, 59);
+            long passed = c.getTimeInMillis() - now;
+            maxAge = (int) (passed/1000);
+            return maxAge;
         }
     }
 }

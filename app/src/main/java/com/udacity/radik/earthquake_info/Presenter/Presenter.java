@@ -17,6 +17,8 @@ import com.udacity.radik.earthquake_info.Model.Data.QueryResult;
 import com.udacity.radik.earthquake_info.Model.RetrofitClient;
 import com.udacity.radik.earthquake_info.View.IView;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -24,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.Cache;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -37,16 +40,6 @@ public class Presenter implements IMainPresenter {
         retrofitClient = new RetrofitClient();
     }
 
-    @Override
-    public void loadData() {
-        if(isNetworkAvailable()){
-            showLoading();
-            startLoading();
-        } else {
-            view.showError();
-        }
-    }
-
     public boolean isNetworkAvailable() {
         ConnectivityManager cm = (ConnectivityManager) ((AppCompatActivity) view)
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -57,23 +50,36 @@ public class Presenter implements IMainPresenter {
         return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
     }
 
-    private void startLoading() {
-        Call<QueryResult> call = retrofitClient.getEarthQuakesAPI(isNetworkAvailable()).getEarthQuakes(getParameters());
-                call.enqueue(new Callback<QueryResult>() {
+    @Override
+    public void loadData() {
+        showLoading();
+        final Cache cache = new Cache(
+                new File(((AppCompatActivity) view).getCacheDir(), "http"),
+                250000000);
+        Call<QueryResult> call = retrofitClient
+                .getEarthQuakesAPI(isNetworkAvailable(), cache)
+                .getEarthQuakes(getParameters());
+        call.enqueue(new Callback<QueryResult>() {
             @Override
             public void onResponse(@NonNull Call<QueryResult> call, @NonNull Response<QueryResult> response) {
                 if(response.isSuccessful()){
+
                     view.showData(getEarthQuakesList(response.body().getFeatures()));
                     hideLoading();
                 }else {
                     view.showError();
+                    try {
+                        Log.e(">", "onResponse: " + response.errorBody().string());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<QueryResult> call, @NonNull Throwable t) {
                 view.showError();
-                Log.e(">", "onFailure: ");
+                Log.e(">", "onFailure: " + t.getMessage());
             }
         });
     }
