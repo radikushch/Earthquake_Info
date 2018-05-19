@@ -1,4 +1,4 @@
-package com.udacity.radik.earthquake_info.View;
+package com.udacity.radik.earthquake_info.View.MainActivity;
 
 import android.content.Intent;
 import android.support.design.widget.Snackbar;
@@ -6,21 +6,21 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 
 import com.udacity.radik.earthquake_info.Model.Data.EarthQuake;
 import com.udacity.radik.earthquake_info.EarthquakesAdapter;
-import com.udacity.radik.earthquake_info.Presenter.IMainPresenter;
-import com.udacity.radik.earthquake_info.Presenter.Presenter;
+import com.udacity.radik.earthquake_info.Presenter.MainPresenter.IMainPresenter;
+import com.udacity.radik.earthquake_info.Presenter.MainPresenter.Presenter;
 import com.udacity.radik.earthquake_info.R;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements IView, EarthquakesAdapter.OnItemClickListener {
+public class MainActivity extends AppCompatActivity implements IMainActivity, EarthquakesAdapter.OnItemClickListener {
 
     private RecyclerView mList;
     private EarthquakesAdapter adapter;
@@ -48,7 +48,6 @@ public class MainActivity extends AppCompatActivity implements IView, Earthquake
     @Override
     protected void onResume() {
         super.onResume();
-        Log.e("<", "onResume: ");
         presenter.loadData();
     }
 
@@ -100,5 +99,21 @@ public class MainActivity extends AppCompatActivity implements IView, Earthquake
     @Override
     public void showDetailInfo(String url) {
         presenter.browseDetailInfo(url);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_activity_options_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int itemId = item.getItemId();
+        if(itemId == R.id.open_settings_activity) {
+            presenter.openSettingsActivity();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

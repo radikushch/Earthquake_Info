@@ -1,4 +1,4 @@
-package com.udacity.radik.earthquake_info.Presenter;
+package com.udacity.radik.earthquake_info.Presenter.MainPresenter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -15,7 +15,8 @@ import com.udacity.radik.earthquake_info.Model.Data.EarthQuake;
 import com.udacity.radik.earthquake_info.Model.Data.Features;
 import com.udacity.radik.earthquake_info.Model.Data.QueryResult;
 import com.udacity.radik.earthquake_info.Model.RetrofitClient;
-import com.udacity.radik.earthquake_info.View.IView;
+import com.udacity.radik.earthquake_info.View.MainActivity.IMainActivity;
+import com.udacity.radik.earthquake_info.View.SettingsActivity.SettingsActivity;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,7 +34,7 @@ import retrofit2.Response;
 
 public class Presenter implements IMainPresenter {
 
-    private IView view;
+    private IMainActivity view;
     private RetrofitClient retrofitClient;
 
     public Presenter() {
@@ -138,12 +139,18 @@ public class Presenter implements IMainPresenter {
     }
 
     @Override
-    public void onAttachView(IView view) {
+    public void onAttachView(IMainActivity view) {
         this.view = view;
     }
 
     @Override
     public void onDetachView() {
         this.view = null;
+    }
+
+    @Override
+    public void openSettingsActivity() {
+        Intent intent = new Intent((AppCompatActivity)view, SettingsActivity.class);
+        view.onStartActivity(intent);
     }
 }
