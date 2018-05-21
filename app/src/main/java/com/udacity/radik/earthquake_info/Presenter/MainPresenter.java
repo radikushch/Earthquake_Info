@@ -1,11 +1,9 @@
-package com.udacity.radik.earthquake_info.Presenter.MainPresenter;
+package com.udacity.radik.earthquake_info.Presenter;
 
-import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
+import android.content.SharedPreferences;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -15,15 +13,15 @@ import com.udacity.radik.earthquake_info.Model.Data.EarthQuake;
 import com.udacity.radik.earthquake_info.Model.Data.Features;
 import com.udacity.radik.earthquake_info.Model.Data.QueryResult;
 import com.udacity.radik.earthquake_info.Model.RetrofitClient;
+import com.udacity.radik.earthquake_info.Utils.NetworkUtils;
+import com.udacity.radik.earthquake_info.Utils.SharedPreferencesUtils;
 import com.udacity.radik.earthquake_info.View.MainActivity.IMainActivity;
+import com.udacity.radik.earthquake_info.View.MainActivity.MainActivity;
 import com.udacity.radik.earthquake_info.View.SettingsActivity.SettingsActivity;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -32,23 +30,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class Presenter implements IMainPresenter {
+public class MainPresenter implements IMainPresenter {
 
     private IMainActivity view;
     private RetrofitClient retrofitClient;
 
-    public Presenter() {
+    public MainPresenter() {
         retrofitClient = new RetrofitClient();
-    }
-
-    public boolean isNetworkAvailable() {
-        ConnectivityManager cm = (ConnectivityManager) ((AppCompatActivity) view)
-                .getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = null;
-        if (cm != null) {
-            activeNetwork = cm.getActiveNetworkInfo();
-        }
-        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
     }
 
     @Override
@@ -57,20 +45,26 @@ public class Presenter implements IMainPresenter {
         final Cache cache = new Cache(
                 new File(((AppCompatActivity) view).getCacheDir(), "http"),
                 250000000);
+
+        boolean isConnectToNetwork = NetworkUtils.isNetworkAvailable((AppCompatActivity) view);
+        Map<String, String> queryParameters = SharedPreferencesUtils
+                .getQueryParameters((AppCompatActivity) view);
+
         Call<QueryResult> call = retrofitClient
-                .getEarthQuakesAPI(isNetworkAvailable(), cache)
-                .getEarthQuakes(getParameters());
+                .getEarthQuakesAPI(isConnectToNetwork, cache)
+                .getEarthQuakes(queryParameters);
         call.enqueue(new Callback<QueryResult>() {
             @Override
             public void onResponse(@NonNull Call<QueryResult> call, @NonNull Response<QueryResult> response) {
                 if(response.isSuccessful()){
-
-                    view.showData(getEarthQuakesList(response.body().getFeatures()));
+                    if (response.body() != null & response.body().getFeatures() != null) {
+                        view.showData(getEarthQuakesList(response.body().getFeatures()));
+                    }
                     hideLoading();
                 }else {
                     view.showError();
                     try {
-                        Log.e(">", "onResponse: " + response.errorBody().string());
+                        Log.e("load", "onResponse: " + response.errorBody().string());
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -80,7 +74,7 @@ public class Presenter implements IMainPresenter {
             @Override
             public void onFailure(@NonNull Call<QueryResult> call, @NonNull Throwable t) {
                 view.showError();
-                Log.e(">", "onFailure: " + t.getMessage());
+                Log.e("load", "onFailure: " + t.getMessage());
             }
         });
     }
@@ -91,26 +85,6 @@ public class Presenter implements IMainPresenter {
             list.add(feature.getEarthQuake());
         }
         return list;
-    }
-
-    private Map<String, String> getParameters() {
-        Map<String, String> parameters = new HashMap<>(4);
-        parameters.put("format", "geojson");
-        parameters.put("starttime", getCurrentMonth());
-        parameters.put("endtime", getCurrentDate());
-        parameters.put("minmag", "0");
-        return parameters;
-
-    }
-
-    @SuppressLint("SimpleDateFormat")
-    private static String getCurrentMonth() {
-        return new SimpleDateFormat("yyyy-MM-01").format(new Date());
-    }
-
-    @SuppressLint("SimpleDateFormat")
-    private static String getCurrentDate() {
-        return new SimpleDateFormat("yyyy-MM-dd").format(new Date());
     }
 
     @Override

@@ -43,7 +43,7 @@ public class RetrofitClient {
         }
 
         @Override
-        public Response intercept(Chain chain) throws IOException {
+        public Response intercept(@NonNull Chain chain) throws IOException {
             Response originalResponse = chain.proceed(chain.request());
             if (isNetworkAvailable) {
                 int maxAge = getmaxAge();

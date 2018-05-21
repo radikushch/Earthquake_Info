@@ -13,14 +13,15 @@ import android.widget.ProgressBar;
 
 import com.udacity.radik.earthquake_info.Model.Data.EarthQuake;
 import com.udacity.radik.earthquake_info.EarthquakesAdapter;
-import com.udacity.radik.earthquake_info.Presenter.MainPresenter.IMainPresenter;
-import com.udacity.radik.earthquake_info.Presenter.MainPresenter.Presenter;
+import com.udacity.radik.earthquake_info.Presenter.IMainPresenter;
+import com.udacity.radik.earthquake_info.Presenter.MainPresenter;
 import com.udacity.radik.earthquake_info.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements IMainActivity, EarthquakesAdapter.OnItemClickListener {
+public class MainActivity extends AppCompatActivity implements
+        IMainActivity, EarthquakesAdapter.OnItemClickListener {
 
     private RecyclerView mList;
     private EarthquakesAdapter adapter;
@@ -41,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements IMainActivity, Ea
         mList.setHasFixedSize(true);
         mList.setLayoutManager(new LinearLayoutManager(this));
         mList.setAdapter(adapter);
-        presenter = new Presenter();
+        presenter = new MainPresenter();
         presenter.onAttachView(this);
     }
 
@@ -116,4 +117,5 @@ public class MainActivity extends AppCompatActivity implements IMainActivity, Ea
         }
         return super.onOptionsItemSelected(item);
     }
+
 }

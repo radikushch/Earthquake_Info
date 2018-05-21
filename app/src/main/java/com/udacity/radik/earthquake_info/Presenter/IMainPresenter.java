@@ -1,4 +1,5 @@
-package com.udacity.radik.earthquake_info.Presenter.MainPresenter;
+package com.udacity.radik.earthquake_info.Presenter;
+
 
 import com.udacity.radik.earthquake_info.View.MainActivity.IMainActivity;
 

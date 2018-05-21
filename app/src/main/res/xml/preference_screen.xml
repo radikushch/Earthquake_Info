@@ -1,10 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <CheckBoxPreference
-        android:defaultValue="true"
-        android:key="show"
-        android:summaryOff="Hidden"
-        android:summaryOn="Shown"
-        android:title="Show bass"/>
+    <PreferenceCategory android:title="@string/magnitude_preference_category_title">
+
+        <EditTextPreference
+            android:defaultValue="@string/magnitude_default_value"
+            android:summary="@string/magnitude_default_value"
+            android:inputType="numberDecimal"
+            android:key="@string/magnitude_key"
+            android:title="@string/magnitude_title"
+            android:singleLine="true"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/time_preferences_category_title">
+        <EditTextPreference
+            android:defaultValue="@string/time_start_default_value"
+            android:inputType="date"
+            android:summary="@string/time_start_default_value"
+            android:key="@string/time_start_key"
+            android:title="@string/time_start_title"
+            android:singleLine="true"/>
+        <EditTextPreference
+            android:defaultValue="@string/time_end_default_value"
+            android:inputType="date"
+            android:summary="@string/time_end_default_value"
+            android:key="@string/time_end_key"
+            android:title="@string/time_end_title"
+            android:singleLine="true"/>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/location_preferences_category_title">
+
+
+    </PreferenceCategory>
 </PreferenceScreen>
