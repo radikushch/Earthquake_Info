@@ -5,6 +5,7 @@ import android.support.v7.preference.CheckBoxPreference;
 import android.support.v7.preference.EditTextPreference;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceScreen;
+import android.util.Log;
 
 import com.udacity.radik.earthquake_info.View.SettingsActivity.ISettingsFragment;
 
@@ -27,6 +28,7 @@ public class SettingsPresenter implements ISettingsPresenter {
         int preferencesCount = preferenceScreen.getPreferenceCount();
         for (int i = 0; i < preferencesCount; i++) {
             Preference p = preferenceScreen.getPreference(i);
+            p.setOnPreferenceChangeListener((Preference.OnPreferenceChangeListener) fragment);
             if(!(p instanceof CheckBoxPreference)) {
                 String value = sharedPreferences.getString(p.getKey(), "");
                 setSummary(p, value);
@@ -43,7 +45,7 @@ public class SettingsPresenter implements ISettingsPresenter {
     @Override
     public void setPreferenceSummary(Preference preference, SharedPreferences sharedPreferences) {
         if(preference != null) {
-            if(preference instanceof EditTextPreference) {
+            if(!(preference instanceof CheckBoxPreference)) {
                 String value = sharedPreferences.getString(preference.getKey(), "");
                 setSummary(preference, value);
             }
@@ -70,11 +72,11 @@ public class SettingsPresenter implements ISettingsPresenter {
         try {
             int power = Integer.parseInt(stringMagnitude);
             if(power > 10 || power < 0) {
-                fragment.showError();
+                fragment.showNumberInputError();
                 return false;
             }
         } catch(NumberFormatException e) {
-            fragment.showError();
+            fragment.showNumberInputError();
             return false;
         }
         return true;
@@ -84,8 +86,8 @@ public class SettingsPresenter implements ISettingsPresenter {
         char delimiter1, delimiter2;
         delimiter1 = stringDate.charAt(4);
         delimiter2 = stringDate.charAt(7);
-        if(delimiter1 != '-' & delimiter2 != '-') {
-            fragment.showError();
+        if(delimiter1 != ':' || delimiter2 != ':') {
+            fragment.showDateInputError();
             return false;
         }
         return true;
