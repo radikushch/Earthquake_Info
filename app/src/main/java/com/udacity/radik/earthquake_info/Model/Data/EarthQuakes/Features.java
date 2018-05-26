@@ -1,6 +1,7 @@
-package com.udacity.radik.earthquake_info.Model.Data;
+package com.udacity.radik.earthquake_info.Model.Data.EarthQuakes;
 
 import com.google.gson.annotations.SerializedName;
+import com.udacity.radik.earthquake_info.Model.Data.EarthQuakes.EarthQuake;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

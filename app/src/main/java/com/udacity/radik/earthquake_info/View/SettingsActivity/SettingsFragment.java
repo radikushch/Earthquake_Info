@@ -30,7 +30,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
 
         settingsPresenter = new SettingsPresenter();
         settingsPresenter.onAttachFragment(this);
-
+        settingsPresenter.loadCountriesInfo();
         SharedPreferences sharedPreferences = getPreferenceScreen().getSharedPreferences();
         PreferenceScreen preferenceScreen = getPreferenceScreen();
 

@@ -1,22 +1,19 @@
 package com.udacity.radik.earthquake_info.Presenter;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
-import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-import com.udacity.radik.earthquake_info.Model.Data.EarthQuake;
-import com.udacity.radik.earthquake_info.Model.Data.Features;
-import com.udacity.radik.earthquake_info.Model.Data.QueryResult;
+import com.udacity.radik.earthquake_info.Model.Data.EarthQuakes.EarthQuake;
+import com.udacity.radik.earthquake_info.Model.Data.EarthQuakes.Features;
+import com.udacity.radik.earthquake_info.Model.Data.EarthQuakes.QueryResult;
 import com.udacity.radik.earthquake_info.Model.RetrofitClient;
 import com.udacity.radik.earthquake_info.Utils.NetworkUtils;
 import com.udacity.radik.earthquake_info.Utils.SharedPreferencesUtils;
 import com.udacity.radik.earthquake_info.View.MainActivity.IMainActivity;
-import com.udacity.radik.earthquake_info.View.MainActivity.MainActivity;
 import com.udacity.radik.earthquake_info.View.SettingsActivity.SettingsActivity;
 
 import java.io.File;

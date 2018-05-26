@@ -13,4 +13,5 @@ public interface ISettingsPresenter {
     void setAllPreferencesSummary(SharedPreferences sharedPreferences, PreferenceScreen preferenceScreen);
     void setPreferenceSummary(Preference p, SharedPreferences sharedPreferences);
     boolean isCorrectInput(Preference preference, Object newValue);
+    void loadCountriesInfo();
 }

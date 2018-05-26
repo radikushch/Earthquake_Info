@@ -11,9 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.udacity.radik.earthquake_info.Model.Data.EarthQuake;
+import com.udacity.radik.earthquake_info.Model.Data.EarthQuakes.EarthQuake;
 
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;

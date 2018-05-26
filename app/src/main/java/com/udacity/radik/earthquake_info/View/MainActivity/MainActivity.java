@@ -11,7 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 
-import com.udacity.radik.earthquake_info.Model.Data.EarthQuake;
+import com.udacity.radik.earthquake_info.Model.Data.EarthQuakes.EarthQuake;
 import com.udacity.radik.earthquake_info.EarthquakesAdapter;
 import com.udacity.radik.earthquake_info.Presenter.IMainPresenter;
 import com.udacity.radik.earthquake_info.Presenter.MainPresenter;

@@ -1,27 +1,29 @@
 package com.udacity.radik.earthquake_info.Model;
 
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
-import java.io.File;
 import java.io.IOException;
-import java.time.ZonedDateTime;
 import java.util.Calendar;
-import java.util.Date;
 
-import lombok.experimental.UtilityClass;
 import okhttp3.Cache;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
 import okhttp3.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
 
-    public IEarthquakeServiceAPI getEarthQuakesAPI(boolean isNetworkAvailable, Cache cache) {
+    public static ICountriesServiceAPI getCountriesInfoAPI() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://api.geonames.org")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        return retrofit.create(ICountriesServiceAPI.class);
+    }
+
+
+    public IEarthquakesServiceAPI getEarthQuakesAPI(boolean isNetworkAvailable, Cache cache) {
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .cache(cache)
                 .addNetworkInterceptor(new CachingControlInterceptor(isNetworkAvailable))
@@ -31,7 +33,7 @@ public class RetrofitClient {
                 .baseUrl("https://earthquake.usgs.gov/fdsnws/event/1/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        return retrofit.create(IEarthquakeServiceAPI.class);
+        return retrofit.create(IEarthquakesServiceAPI.class);
     }
 
     private class CachingControlInterceptor implements Interceptor {
@@ -46,7 +48,7 @@ public class RetrofitClient {
         public Response intercept(@NonNull Chain chain) throws IOException {
             Response originalResponse = chain.proceed(chain.request());
             if (isNetworkAvailable) {
-                int maxAge = getmaxAge();
+                int maxAge = getMaxAge();
                 return originalResponse.newBuilder()
                         .header("Cache-Control", "public, max-age=" + maxAge)
                         .build();
@@ -58,7 +60,7 @@ public class RetrofitClient {
             }
         }
 
-        private int getmaxAge() {
+        private int getMaxAge() {
             int maxAge;
             Calendar c = Calendar.getInstance();
             Long now = c.getTimeInMillis();

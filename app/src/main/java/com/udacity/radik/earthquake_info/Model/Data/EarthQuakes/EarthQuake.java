@@ -1,4 +1,4 @@
-package com.udacity.radik.earthquake_info.Model.Data;
+package com.udacity.radik.earthquake_info.Model.Data.EarthQuakes;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

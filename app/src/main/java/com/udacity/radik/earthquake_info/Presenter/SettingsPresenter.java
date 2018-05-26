@@ -1,13 +1,26 @@
 package com.udacity.radik.earthquake_info.Presenter;
 
+import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
 import android.support.v7.preference.CheckBoxPreference;
 import android.support.v7.preference.EditTextPreference;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceScreen;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.udacity.radik.earthquake_info.Model.Data.Countries.Countries;
+import com.udacity.radik.earthquake_info.Model.Data.Countries.GeoNames;
+import com.udacity.radik.earthquake_info.Model.RetrofitClient;
 import com.udacity.radik.earthquake_info.View.SettingsActivity.ISettingsFragment;
+
+import java.text.DateFormat;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SettingsPresenter implements ISettingsPresenter {
 
@@ -91,5 +104,26 @@ public class SettingsPresenter implements ISettingsPresenter {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public void loadCountriesInfo() {
+        Call<Countries> call = RetrofitClient.getCountriesInfoAPI().getCountriesInfo();
+        call.enqueue(new Callback<Countries>() {
+            @Override
+            public void onResponse(@NonNull Call<Countries> call, @NonNull Response<Countries> response) {
+                if(response.isSuccessful()) {
+                    List<GeoNames> listOfCountries = response.body().getGeonames();
+                    for (GeoNames country : listOfCountries) {
+                        Log.e("countries", "onResponse: " + country.getCountryName());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Countries> call, @NonNull Throwable t) {
+                Toast.makeText((Context) fragment, "Failed", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
