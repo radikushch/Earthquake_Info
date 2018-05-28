@@ -1,5 +1,9 @@
 package com.udacity.radik.earthquake_info.Presenter;
 
+import android.arch.lifecycle.Lifecycle;
+import android.arch.lifecycle.LifecycleObserver;
+import android.arch.lifecycle.LifecycleOwner;
+import android.arch.lifecycle.OnLifecycleEvent;
 import android.content.Intent;
 import android.net.Uri;
 import android.provider.Settings;
@@ -27,7 +31,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainPresenter implements IMainPresenter {
+public class MainPresenter implements IMainPresenter, LifecycleObserver {
 
     private IMainActivity view;
     private RetrofitClient retrofitClient;
@@ -36,7 +40,9 @@ public class MainPresenter implements IMainPresenter {
         retrofitClient = new RetrofitClient();
     }
 
+
     @Override
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
     public void loadData() {
         showLoading();
         final Cache cache = new Cache(
@@ -115,6 +121,7 @@ public class MainPresenter implements IMainPresenter {
     }
 
     @Override
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     public void onDetachView() {
         this.view = null;
     }
@@ -124,4 +131,5 @@ public class MainPresenter implements IMainPresenter {
         Intent intent = new Intent((AppCompatActivity)view, SettingsActivity.class);
         view.onStartActivity(intent);
     }
+
 }

@@ -1,5 +1,6 @@
 package com.udacity.radik.earthquake_info.View.SettingsActivity;
 
+import android.arch.lifecycle.LifecycleObserver;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -38,9 +39,6 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
         settingsPresenter.loadCountriesInfo();
         SharedPreferences sharedPreferences = getPreferenceScreen().getSharedPreferences();
         PreferenceScreen preferenceScreen = getPreferenceScreen();
-
-
-
         settingsPresenter.setAllPreferencesSummary(sharedPreferences, preferenceScreen);
     }
 

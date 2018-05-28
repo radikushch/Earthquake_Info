@@ -1,5 +1,6 @@
 package com.udacity.radik.earthquake_info.View.MainActivity;
 
+import android.arch.lifecycle.LifecycleObserver;
 import android.content.Intent;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -44,18 +45,7 @@ public class MainActivity extends AppCompatActivity implements
         mList.setAdapter(adapter);
         presenter = new MainPresenter();
         presenter.onAttachView(this);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        presenter.loadData();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        presenter.onDetachView();
+        getLifecycle().addObserver((LifecycleObserver) presenter);
     }
 
     @Override
