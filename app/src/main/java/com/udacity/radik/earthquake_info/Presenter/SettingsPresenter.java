@@ -1,7 +1,10 @@
 package com.udacity.radik.earthquake_info.Presenter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v7.preference.CheckBoxPreference;
 import android.support.v7.preference.EditTextPreference;
@@ -10,13 +13,15 @@ import android.support.v7.preference.PreferenceScreen;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.udacity.radik.earthquake_info.EarthQuakeApplication;
+import com.udacity.radik.earthquake_info.Model.Database.AppDatabase;
 import com.udacity.radik.earthquake_info.Model.Data.Countries.Countries;
 import com.udacity.radik.earthquake_info.Model.Data.Countries.GeoNames;
-import com.udacity.radik.earthquake_info.Model.RetrofitClient;
+import com.udacity.radik.earthquake_info.Model.Database.GeoNamesDAO;
+import com.udacity.radik.earthquake_info.Model.NetworkClient.RetrofitClient;
 import com.udacity.radik.earthquake_info.View.SettingsActivity.ISettingsFragment;
 
 import java.io.IOException;
-import java.text.DateFormat;
 import java.util.Arrays;
 import java.util.List;
 
@@ -26,16 +31,16 @@ import retrofit2.Response;
 
 public class SettingsPresenter implements ISettingsPresenter {
 
-    private ISettingsFragment fragment;
+    private static ISettingsFragment fragment;
 
     @Override
     public void onAttachFragment(ISettingsFragment fragment) {
-        this.fragment = fragment;
+        SettingsPresenter.fragment = fragment;
     }
 
     @Override
     public void onDetachFragment() {
-        this.fragment = null;
+        fragment = null;
     }
 
     @Override
@@ -117,6 +122,7 @@ public class SettingsPresenter implements ISettingsPresenter {
                 if(response.isSuccessful()) {
                     List<GeoNames> listOfCountries = response.body().getGeonames();
                     sortCountriesAndEditListPreference(listOfCountries);
+                    saveInfoAboutCountriesToDatabase(listOfCountries);
                 }else {
                     try {
                         Log.e("countries", "onResponse: " + response.errorBody().string());
@@ -133,17 +139,45 @@ public class SettingsPresenter implements ISettingsPresenter {
         });
     }
 
-    private void sortCountriesAndEditListPreference(List<GeoNames> listOfCountries) {
+    private static void sortCountriesAndEditListPreference(List<GeoNames> listOfCountries) {
         String[] countries = new String[listOfCountries.size()];
-        for (int i = 0; i < countries.length; i++)
+        for (int i = 0; i < countries.length; i++) {
             countries[i] = listOfCountries.get(i).getCountryName();
+        }
         Arrays.sort(countries);
         fragment.setListPreference(countries);
     }
 
+    private void saveInfoAboutCountriesToDatabase(final List<GeoNames> listOfCountries) {
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                AppDatabase database = EarthQuakeApplication.getInstance().getDatabase();
+                GeoNamesDAO geoNamesDAO = database.geoNamesDAO();
+                geoNamesDAO.insert(listOfCountries);
+            }
+        }).start();
+    }
+
     @Override
     public void loadCountriesInfoFromTheDatabase() {
+        new DatabaseAsyncTask().execute();
+    }
 
+    private static class DatabaseAsyncTask extends AsyncTask<Void, Void, List<GeoNames>> {
+
+        @Override
+        protected List<GeoNames> doInBackground(Void... voids) {
+            AppDatabase database = EarthQuakeApplication.getInstance().getDatabase();
+            GeoNamesDAO geoNamesDAO = database.geoNamesDAO();
+            return geoNamesDAO.getAll();
+        }
+
+        @Override
+        protected void onPostExecute(List<GeoNames> countries) {
+           sortCountriesAndEditListPreference(countries);
+        }
     }
 
 

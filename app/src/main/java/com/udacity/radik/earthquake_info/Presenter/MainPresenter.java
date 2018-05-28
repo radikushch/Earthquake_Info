@@ -2,7 +2,6 @@ package com.udacity.radik.earthquake_info.Presenter;
 
 import android.arch.lifecycle.Lifecycle;
 import android.arch.lifecycle.LifecycleObserver;
-import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.OnLifecycleEvent;
 import android.content.Intent;
 import android.net.Uri;
@@ -14,7 +13,7 @@ import android.util.Log;
 import com.udacity.radik.earthquake_info.Model.Data.EarthQuakes.EarthQuake;
 import com.udacity.radik.earthquake_info.Model.Data.EarthQuakes.Features;
 import com.udacity.radik.earthquake_info.Model.Data.EarthQuakes.QueryResult;
-import com.udacity.radik.earthquake_info.Model.RetrofitClient;
+import com.udacity.radik.earthquake_info.Model.NetworkClient.RetrofitClient;
 import com.udacity.radik.earthquake_info.Utils.NetworkUtils;
 import com.udacity.radik.earthquake_info.Utils.SharedPreferencesUtils;
 import com.udacity.radik.earthquake_info.View.MainActivity.IMainActivity;

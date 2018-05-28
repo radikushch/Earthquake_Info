@@ -1,6 +1,9 @@
-package com.udacity.radik.earthquake_info.Model;
+package com.udacity.radik.earthquake_info.Model.NetworkClient;
 
 import android.support.annotation.NonNull;
+
+import com.udacity.radik.earthquake_info.Model.NetworkClient.ICountriesServiceAPI;
+import com.udacity.radik.earthquake_info.Model.NetworkClient.IEarthquakesServiceAPI;
 
 import java.io.IOException;
 import java.util.Calendar;

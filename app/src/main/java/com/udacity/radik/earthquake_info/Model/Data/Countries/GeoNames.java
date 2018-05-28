@@ -14,8 +14,8 @@ import lombok.NoArgsConstructor;
 @Entity
 public class GeoNames {
 
-    @PrimaryKey
-    public long id;
+    @PrimaryKey(autoGenerate = true)
+    private long id;
     @SerializedName("countryName")
     private String countryName;
     @SerializedName("west")

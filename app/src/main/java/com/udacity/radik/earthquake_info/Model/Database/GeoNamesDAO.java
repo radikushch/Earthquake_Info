@@ -1,9 +1,10 @@
-package com.udacity.radik.earthquake_info.Model;
+package com.udacity.radik.earthquake_info.Model.Database;
 
 
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
+import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 
@@ -20,8 +21,8 @@ public interface GeoNamesDAO {
     @Query("SELECT * FROM geonames WHERE id = :id")
     GeoNames getByID(long id);
 
-    @Insert
-    void insert (GeoNames geoNames);
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insert (List<GeoNames> geoNames);
 
     @Update
     void update(GeoNames geoNames);

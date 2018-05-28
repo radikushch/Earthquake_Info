@@ -1,4 +1,4 @@
-package com.udacity.radik.earthquake_info.Model;
+package com.udacity.radik.earthquake_info.Model.NetworkClient;
 
 import com.udacity.radik.earthquake_info.Model.Data.EarthQuakes.QueryResult;
 
