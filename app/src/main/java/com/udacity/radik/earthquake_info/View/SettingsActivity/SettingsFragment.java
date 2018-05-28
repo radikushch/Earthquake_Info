@@ -4,6 +4,7 @@ import android.arch.lifecycle.LifecycleObserver;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.CheckBoxPreference;
 import android.support.v7.preference.EditTextPreference;
@@ -13,6 +14,7 @@ import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.preference.PreferenceScreen;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.udacity.radik.earthquake_info.Model.Data.Countries.GeoNames;
@@ -36,9 +38,16 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
 
         settingsPresenter = new SettingsPresenter();
         settingsPresenter.onAttachFragment(this);
-        settingsPresenter.loadCountriesInfo();
+
         SharedPreferences sharedPreferences = getPreferenceScreen().getSharedPreferences();
         PreferenceScreen preferenceScreen = getPreferenceScreen();
+        CheckBoxPreference checkBoxPreference =
+                (CheckBoxPreference) findPreference(getString(R.string.load_countries_info_key));
+        if(sharedPreferences.getBoolean(checkBoxPreference.getKey(), true)) {
+            settingsPresenter.loadCountriesInfoFromTheInternet();
+        }else {
+            settingsPresenter.loadCountriesInfoFromTheDatabase();
+        }
         settingsPresenter.setAllPreferencesSummary(sharedPreferences, preferenceScreen);
     }
 

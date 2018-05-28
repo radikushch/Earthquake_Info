@@ -16,5 +16,7 @@
 
     <string name="location_key">location</string>
     <string name="location_title">location</string>
+    <string name="load_countries_info_key">load_countries_info</string>
+    <string name="load_countries_info_title">Load list of countries</string>
 
 </resources>

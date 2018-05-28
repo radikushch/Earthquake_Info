@@ -109,7 +109,7 @@ public class SettingsPresenter implements ISettingsPresenter {
     }
 
     @Override
-    public void loadCountriesInfo() {
+    public void loadCountriesInfoFromTheInternet() {
         Call<Countries> call = RetrofitClient.getCountriesInfoAPI().getCountriesInfo();
         call.enqueue(new Callback<Countries>() {
             @Override
@@ -136,8 +136,15 @@ public class SettingsPresenter implements ISettingsPresenter {
     private void sortCountriesAndEditListPreference(List<GeoNames> listOfCountries) {
         String[] countries = new String[listOfCountries.size()];
         for (int i = 0; i < countries.length; i++)
-           countries[i] = listOfCountries.get(i).getCountryName();
+            countries[i] = listOfCountries.get(i).getCountryName();
         Arrays.sort(countries);
         fragment.setListPreference(countries);
     }
+
+    @Override
+    public void loadCountriesInfoFromTheDatabase() {
+
+    }
+
+
 }
