@@ -18,17 +18,14 @@ public interface GeoNamesDAO {
     @Query("SELECT * FROM geonames")
     List<GeoNames> getAll();
 
-    @Query("SELECT * FROM geonames WHERE id = :id")
-    GeoNames getByID(long id);
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert (List<GeoNames> geoNames);
+    void insert (List<GeoNames> countries);
+
+    @Delete()
+    void deleteAll(List<GeoNames> countries);
 
     @Update
-    void update(GeoNames geoNames);
-
-    @Delete
-    void delete(GeoNames geoNames);
+    void update(List<GeoNames> countries);
 
 
 }

@@ -1,13 +1,12 @@
 package com.udacity.radik.earthquake_info.Presenter;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v7.preference.CheckBoxPreference;
 import android.support.v7.preference.EditTextPreference;
+import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceScreen;
 import android.util.Log;
@@ -48,17 +47,11 @@ public class SettingsPresenter implements ISettingsPresenter {
         int preferencesCount = preferenceScreen.getPreferenceCount();
         for (int i = 0; i < preferencesCount; i++) {
             Preference p = preferenceScreen.getPreference(i);
-            p.setOnPreferenceChangeListener((Preference.OnPreferenceChangeListener) fragment);
+            if(p instanceof EditTextPreference)
+                p.setOnPreferenceChangeListener((Preference.OnPreferenceChangeListener) fragment);
             if(!(p instanceof CheckBoxPreference)) {
-                String value = sharedPreferences.getString(p.getKey(), "");
-                setSummary(p, value);
+                setPreferenceSummary(p, sharedPreferences);
             }
-        }
-    }
-
-    private void setSummary(Preference p, String value) {
-        if(p instanceof EditTextPreference) {
-            p.setSummary(value);
         }
     }
 
@@ -71,6 +64,21 @@ public class SettingsPresenter implements ISettingsPresenter {
             }
         }
     }
+
+    private void setSummary(Preference p, String value) {
+        if(p instanceof EditTextPreference) {
+            p.setSummary(value);
+        }
+        if(p instanceof ListPreference) {
+            ListPreference listPreference = (ListPreference) p;
+            int prefIndex = listPreference.findIndexOfValue(value);
+            if(prefIndex >= 0) {
+                p.setSummary(listPreference.getEntries()[prefIndex]);
+            }
+        }
+    }
+
+
 
     @Override
     public boolean isCorrectInput(Preference preference, Object newValue) {
@@ -123,15 +131,8 @@ public class SettingsPresenter implements ISettingsPresenter {
                     List<GeoNames> listOfCountries = response.body().getGeonames();
                     sortCountriesAndEditListPreference(listOfCountries);
                     saveInfoAboutCountriesToDatabase(listOfCountries);
-                }else {
-                    try {
-                        Log.e("countries", "onResponse: " + response.errorBody().string());
-                    } catch (IOException e) {
-                        e.printStackTrace();
                     }
-                }
             }
-
             @Override
             public void onFailure(@NonNull Call<Countries> call, @NonNull Throwable t) {
                 Toast.makeText((Context) fragment, "Failed", Toast.LENGTH_SHORT).show();
@@ -140,11 +141,24 @@ public class SettingsPresenter implements ISettingsPresenter {
     }
 
     private static void sortCountriesAndEditListPreference(List<GeoNames> listOfCountries) {
-        String[] countries = new String[listOfCountries.size()];
-        for (int i = 0; i < countries.length; i++) {
+        String[] countries = new String[listOfCountries.size() + 1];
+        for (int i = 0; i < countries.length - 1; i++) {
             countries[i] = listOfCountries.get(i).getCountryName();
         }
+        countries[countries.length - 1] = "All";
         Arrays.sort(countries);
+        for (int i = 0; i < countries.length; i++) {
+            if(countries[i].equals("All")) {
+                int j = i;
+                String tmp;
+                while(!countries[0].equals("All")) {
+                    tmp = countries[j - 1];
+                    countries[j - 1] = countries[j];
+                    countries[j] = tmp;
+                    j--;
+                }
+            }
+        }
         fragment.setListPreference(countries);
     }
 
@@ -155,7 +169,11 @@ public class SettingsPresenter implements ISettingsPresenter {
             public void run() {
                 AppDatabase database = EarthQuakeApplication.getInstance().getDatabase();
                 GeoNamesDAO geoNamesDAO = database.geoNamesDAO();
-                geoNamesDAO.insert(listOfCountries);
+                if(geoNamesDAO.getAll().size() > 0) {
+                    geoNamesDAO.update(listOfCountries);
+                }else {
+                    geoNamesDAO.insert(listOfCountries);
+                }
             }
         }).start();
     }
@@ -179,6 +197,4 @@ public class SettingsPresenter implements ISettingsPresenter {
            sortCountriesAndEditListPreference(countries);
         }
     }
-
-
 }
