@@ -15,7 +15,9 @@ import com.udacity.radik.earthquake_info.Model.Data.Countries.GeoNames;
 import com.udacity.radik.earthquake_info.Model.RetrofitClient;
 import com.udacity.radik.earthquake_info.View.SettingsActivity.ISettingsFragment;
 
+import java.io.IOException;
 import java.text.DateFormat;
+import java.util.Arrays;
 import java.util.List;
 
 import retrofit2.Call;
@@ -114,8 +116,12 @@ public class SettingsPresenter implements ISettingsPresenter {
             public void onResponse(@NonNull Call<Countries> call, @NonNull Response<Countries> response) {
                 if(response.isSuccessful()) {
                     List<GeoNames> listOfCountries = response.body().getGeonames();
-                    for (GeoNames country : listOfCountries) {
-                        Log.e("countries", "onResponse: " + country.getCountryName());
+                    sortCountriesAndEditListPreference(listOfCountries);
+                }else {
+                    try {
+                        Log.e("countries", "onResponse: " + response.errorBody().string());
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
                 }
             }
@@ -125,5 +131,13 @@ public class SettingsPresenter implements ISettingsPresenter {
                 Toast.makeText((Context) fragment, "Failed", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void sortCountriesAndEditListPreference(List<GeoNames> listOfCountries) {
+        String[] countries = new String[listOfCountries.size()];
+        for (int i = 0; i < countries.length; i++)
+           countries[i] = listOfCountries.get(i).getCountryName();
+        Arrays.sort(countries);
+        fragment.setListPreference(countries);
     }
 }

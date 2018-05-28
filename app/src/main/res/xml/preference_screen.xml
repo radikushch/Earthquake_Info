@@ -21,5 +21,9 @@
             android:singleLine="true"
             android:key="@string/time_end_key"
             android:title="@string/time_end_title"/>
+        <ListPreference
+            android:defaultValue="All"
+            android:key="@string/location_key"
+            android:title="@string/location_title"/>
 
 </PreferenceScreen>

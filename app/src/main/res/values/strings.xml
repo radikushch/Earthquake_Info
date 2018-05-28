@@ -2,20 +2,19 @@
     <string name="app_name">Earthquake-Info</string>
     <string name="action_settings">Settings</string>
 
-    <string name="magnitude_preference_category_title">Power of the earthquake</string>
     <string name="magnitude_key">magnitude</string>
     <string name="magnitude_title">Min magnitude</string>
     <string name="magnitude_default_value">5</string>
 
-    <string name="time_preferences_category_title">Time frame</string>
-    <string name="time_start_key">time_start_key</string>
+    <string name="time_start_key">time_start</string>
     <string name="time_start_title">First date</string>
     <string name="time_start_default_value">2018:04:21</string>
 
-    <string name="time_end_key">time_end_key</string>
+    <string name="time_end_key">time_end</string>
     <string name="time_end_title">Last date</string>
     <string name="time_end_default_value">2018:04:24</string>
-    <string name="location_preferences_category_title">Location</string>
 
+    <string name="location_key">location</string>
+    <string name="location_title">location</string>
 
 </resources>

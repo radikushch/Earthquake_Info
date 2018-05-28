@@ -7,6 +7,6 @@ import retrofit2.http.GET;
 
 public interface ICountriesServiceAPI {
 
-    @GET("/countryInfoJSON?formatted=true&lang=it&username=demo&style=full")
+    @GET("/countryInfoJSON?formatted=true&lang=it&username=flo_rida&style=full")
     Call<Countries> getCountriesInfo();
 }
