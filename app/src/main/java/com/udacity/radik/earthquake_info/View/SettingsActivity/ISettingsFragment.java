@@ -14,5 +14,5 @@ public interface ISettingsFragment {
     String getFirstDateKey();
     String getLastDateKey();
 
-    void setListPreference(String[] listOfCountries);
+    void setListPreference(String[] listOCountries);
 }

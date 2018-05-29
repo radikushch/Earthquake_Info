@@ -15,4 +15,5 @@ public interface ISettingsPresenter {
     boolean isCorrectInput(Preference preference, Object newValue);
     void loadCountriesInfoFromTheInternet();
     void loadCountriesInfoFromTheDatabase();
+
 }

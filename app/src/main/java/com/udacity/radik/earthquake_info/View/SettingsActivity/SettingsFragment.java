@@ -1,29 +1,17 @@
 package com.udacity.radik.earthquake_info.View.SettingsActivity;
 
-import android.arch.lifecycle.LifecycleObserver;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.CheckBoxPreference;
-import android.support.v7.preference.EditTextPreference;
 import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
-import android.support.v7.preference.PreferenceManager;
 import android.support.v7.preference.PreferenceScreen;
-import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
-import com.udacity.radik.earthquake_info.Model.Data.Countries.GeoNames;
 import com.udacity.radik.earthquake_info.Presenter.ISettingsPresenter;
 import com.udacity.radik.earthquake_info.Presenter.SettingsPresenter;
 import com.udacity.radik.earthquake_info.R;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class SettingsFragment extends PreferenceFragmentCompat implements
         SharedPreferences.OnSharedPreferenceChangeListener,
@@ -98,6 +86,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
     public String getLastDateKey() {
         return getString(R.string.time_end_key);
     }
+
 
     @Override
     public void setListPreference(String[] listOfCountries) {

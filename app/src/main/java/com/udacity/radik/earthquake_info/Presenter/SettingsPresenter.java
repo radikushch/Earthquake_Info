@@ -60,25 +60,10 @@ public class SettingsPresenter implements ISettingsPresenter {
         if(preference != null) {
             if(!(preference instanceof CheckBoxPreference)) {
                 String value = sharedPreferences.getString(preference.getKey(), "");
-                setSummary(preference, value);
+                preference.setSummary(value);
             }
         }
     }
-
-    private void setSummary(Preference p, String value) {
-        if(p instanceof EditTextPreference) {
-            p.setSummary(value);
-        }
-        if(p instanceof ListPreference) {
-            ListPreference listPreference = (ListPreference) p;
-            int prefIndex = listPreference.findIndexOfValue(value);
-            if(prefIndex >= 0) {
-                p.setSummary(listPreference.getEntries()[prefIndex]);
-            }
-        }
-    }
-
-
 
     @Override
     public boolean isCorrectInput(Preference preference, Object newValue) {
