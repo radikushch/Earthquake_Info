@@ -3,6 +3,7 @@ package com.udacity.radik.earthquake_info.Presenter;
 import android.arch.lifecycle.Lifecycle;
 import android.arch.lifecycle.LifecycleObserver;
 import android.arch.lifecycle.OnLifecycleEvent;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.provider.Settings;
@@ -30,7 +31,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainPresenter implements IMainPresenter, LifecycleObserver {
+public class MainPresenter implements IMainPresenter, LifecycleObserver,
+        SharedPreferencesUtils.SharedPreferencesCallback {
 
     private IMainActivity view;
     private RetrofitClient retrofitClient;
@@ -40,21 +42,23 @@ public class MainPresenter implements IMainPresenter, LifecycleObserver {
     }
 
 
-    @Override
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
-    public void loadData() {
+    public void startLoadingData() {
         showLoading();
+        SharedPreferencesUtils.registerCallBack(this);
+        SharedPreferencesUtils.getQueryParameters((Context) view);
+    }
+
+    @Override
+    public void loadData(Map<String, String> parameters) {
         final Cache cache = new Cache(
                 new File(((AppCompatActivity) view).getCacheDir(), "http"),
                 250000000);
 
         boolean isConnectToNetwork = NetworkUtils.isNetworkAvailable((AppCompatActivity) view);
-        Map<String, String> queryParameters = SharedPreferencesUtils
-                .getQueryParameters((AppCompatActivity) view);
-
         Call<QueryResult> call = retrofitClient
                 .getEarthQuakesAPI(isConnectToNetwork, cache)
-                .getEarthQuakes(queryParameters);
+                .getEarthQuakes(parameters);
         call.enqueue(new Callback<QueryResult>() {
             @Override
             public void onResponse(@NonNull Call<QueryResult> call, @NonNull Response<QueryResult> response) {
@@ -130,5 +134,6 @@ public class MainPresenter implements IMainPresenter, LifecycleObserver {
         Intent intent = new Intent((AppCompatActivity)view, SettingsActivity.class);
         view.onStartActivity(intent);
     }
+
 
 }

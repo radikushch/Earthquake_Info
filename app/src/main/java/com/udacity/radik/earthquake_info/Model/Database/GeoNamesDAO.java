@@ -18,6 +18,9 @@ public interface GeoNamesDAO {
     @Query("SELECT * FROM geonames")
     List<GeoNames> getAll();
 
+    @Query("SELECT * FROM geonames WHERE countryName = :countryName")
+    GeoNames getByName(String countryName);
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert (List<GeoNames> countries);
 
