@@ -9,10 +9,7 @@ import android.preference.PreferenceManager;
 import com.udacity.radik.earthquake_info.EarthQuakeApplication;
 import com.udacity.radik.earthquake_info.Model.Data.Countries.GeoNames;
 import com.udacity.radik.earthquake_info.R;
-import com.udacity.radik.earthquake_info.View.MainActivity.MainActivity;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 

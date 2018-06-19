@@ -1,26 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="horizontal"
-    android:padding="16dp"
     android:background="@drawable/list_item_selector"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:orientation="horizontal"
+    android:padding="16dp">
 
     <TextView
         android:id="@+id/tv_level"
         android:layout_width="36dp"
         android:layout_height="36dp"
-        android:gravity="center"
         android:layout_gravity="center_vertical"
+        android:background="@drawable/round_shape"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="center"
         android:textColor="@android:color/white"
         android:textSize="16sp"
-        android:fontFamily="sans-serif-medium"
-        android:background="@drawable/round_shape"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="6.5"/>
+        tools:text="6.5" />
+
     <TextView
         android:id="@+id/tv_distance"
         android:layout_width="0dp"
@@ -29,45 +30,56 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="32dp"
         android:layout_weight="1"
-        android:textSize="12sp"
         android:textColor="@color/textColorEarthquakeDetails"
+        android:textSize="12sp"
         app:layout_constraintLeft_toRightOf="@id/tv_level"
-        app:layout_constraintTop_toTopOf="@id/tv_level"
         app:layout_constraintRight_toLeftOf="@id/tv_date"
-        tools:text="35 km SW of"/>
+        app:layout_constraintTop_toTopOf="@id/tv_level"
+        tools:text="35 km SW of"
+        android:layout_marginEnd="32dp"
+        android:layout_marginStart="16dp" />
+
     <TextView
         android:id="@+id/tv_place"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginLeft="16dp"
-        android:layout_weight="1"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
         android:text="16sp"
         android:textColor="@color/textColorEarthquakeLocation"
-        app:layout_constraintLeft_toRightOf="@id/tv_level"
+        app:layout_constraintEnd_toEndOf="@+id/barrier3"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toStartOf="@+id/tv_distance"
         app:layout_constraintTop_toBottomOf="@id/tv_distance"
-        tools:text="San Francisco"/>
+        tools:text="San Francisco" />
 
     <TextView
         android:id="@+id/tv_date"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginLeft="16dp"
         android:layout_weight="1"
         android:textColor="@color/textColorEarthquakeDetails"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Feb 2, 2018"/>
+        tools:text="Feb 2, 2018" />
+
     <TextView
         android:id="@+id/tv_time"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginLeft="16dp"
-        android:layout_weight="1"
         android:textColor="@color/textColorEarthquakeDetails"
         app:layout_constraintRight_toRightOf="@id/tv_date"
         app:layout_constraintTop_toBottomOf="@id/tv_date"
-        tools:text="3:00 PM"/>
+        tools:text="3:00 PM" />
+
+    <android.support.constraint.Barrier
+        android:id="@+id/barrier3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="start"
+        app:constraint_referenced_ids="tv_date,tv_time"/>
+
 </android.support.constraint.ConstraintLayout>

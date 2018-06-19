@@ -63,6 +63,7 @@ public class RetrofitClient {
             }
         }
 
+
         private int getMaxAge() {
             int maxAge;
             Calendar c = Calendar.getInstance();
